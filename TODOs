@@ -1,0 +1,31 @@
+1. Standardize HTTP Methods & Query Params
+Update your APIClient base methods (get, post, etc.) to accept **kwargs. This allows you to pass params, json data, and headers dynamically to the underlying requests calls. Without query param support, your users can't filter posts by userId.
+
+2. Create a Custom Exception Hierarchy
+Define a exceptions.py file. Wrap every requests error in your own namespace (e.g., JSONPlaceholderError, ResourceNotFoundError). This prevents your users' code from breaking if you ever decide to swap requests for another library like httpx in the future.
+
+3. Implement Data Modeling (Pydantic/Dataclasses)
+Replace Dict and List[Dict] with actual Python objects. Use Pydantic models to define what a Post, Comment, or User looks like. This gives your users "dot-notation" access (e.g., post.title) and IDE autocompletion.
+
+4. Build the "Unified Entry Point" (The Facade)
+Create a master class (e.g., JSONPlaceholder) that initializes the session once and provides access to the sub-clients. This means the user only ever has to import one thing.
+
+Usage: api = JSONPlaceholder(); api.posts.get(1)
+
+5. Configure Resilience (Timeouts & Retries)
+Professional SDKs never wait forever. Set a default timeout (e.g., 10 seconds). Attach an HTTPAdapter to your requests.Session to automatically handle exponential backoff retries for 500-series errors or connection blips.
+
+6. Add Type Hinting & Generics
+Use Python’s TypeVar and Generic in your base APIClient. This ensures that when a user calls PostClient.get(), their IDE knows it returns a Post object and not just Any. This is the hallmark of a high-quality Python library.
+
+7. Identify the SDK (User-Agent & Metadata)
+Inject a custom User-Agent header into your session (e.g., json-sdk-python/1.0.0). This is a best practice for API providers to track which SDK versions are being used and to contact you if you're hitting rate limits.
+
+8. Internal Logging
+Integrate Python's standard logging module. Add "debug-level" logs that show the URLs being requested and "error-level" logs for failed attempts. This allows your users to debug their own implementation by simply turning on logging.DEBUG.
+
+9. Standardized Packaging (pyproject.toml)
+Move away from simple scripts. Use a pyproject.toml file to manage dependencies and metadata. This makes your SDK installable via pip install . and prepares it for distribution on PyPI.
+
+10. Comprehensive Documentation (Docstrings & README)
+Write Google-style docstrings for every public method. A professional SDK is only as good as its documentation. Ensure your README has a "3-line Quickstart" and an "Example" section for every major resource.
