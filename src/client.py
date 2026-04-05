@@ -1,8 +1,15 @@
-from typing import Any, Dict, List
+from typing import Any
+from typing import Dict
+from typing import List
 
 import requests
 
+from .constants import ALBUMS_BASE_URL
+from .constants import COMMENTS_BASE_URL
+from .constants import PHOTOS_BASE_URL
 from .constants import POSTS_BASE_URL
+from .constants import TODOS_BASE_URL
+from .constants import USERS_BASE_URL
 
 
 class APIClient:
@@ -10,49 +17,57 @@ class APIClient:
         self.base_url = base_url
         self.session = requests.Session()
 
-    def get(self, url: str) -> Any:
+    def _get(self, url: str) -> Any:
         # TODO: Add support for query params
         response = self.session.get(url=url)
         response.raise_for_status()
         return response.json()
 
-    def post(self): ...
+    def _post(self): ...
 
-    def put(self): ...
+    def _put(self): ...
 
-    def patch(self): ...
+    def _patch(self): ...
+
+    def _delete(self): ...
+
+    def list(self) -> List[Dict]:
+        return self._get(url=self.base_url)
+
+    def fetch(self): ...
+
+    def create(self): ...
+
+    def update(self): ...
 
     def delete(self): ...
 
 
 class PostClient(APIClient):
     def __init__(self) -> None:
-        super().__init__(POSTS_BASE_URL)
-
-    def get_posts(self) -> List[Dict]:
-        return self.get(url=self.base_url)
-
-    def get_post(self): ...
-
-    def create_post(self): ...
-
-    def replace_post(self): ...
-
-    def update_post(self): ...
-
-    def delete_post(self): ...
+        super().__init__(base_url=POSTS_BASE_URL)
 
 
-class CommentClient(APIClient): ...
+class CommentClient(APIClient):
+    def __init__(self) -> None:
+        super().__init__(base_url=COMMENTS_BASE_URL)
 
 
-class AlbumClient(APIClient): ...
+class AlbumClient(APIClient):
+    def __init__(self) -> None:
+        super().__init__(base_url=ALBUMS_BASE_URL)
 
 
-class PhotoClient(APIClient): ...
+class PhotoClient(APIClient):
+    def __init__(self) -> None:
+        super().__init__(base_url=PHOTOS_BASE_URL)
 
 
-class TodoClient(APIClient): ...
+class TodoClient(APIClient):
+    def __init__(self) -> None:
+        super().__init__(base_url=TODOS_BASE_URL)
 
 
-class UserClient(APIClient): ...
+class UserClient(APIClient):
+    def __init__(self) -> None:
+        super().__init__(base_url=USERS_BASE_URL)
