@@ -29,18 +29,23 @@ class APIClient:
 
     def _patch(self): ...
 
-    def _delete(self): ...
+    def _delete(self, url: str) -> Any:
+        response = self.session.delete(url=url)
+        response.raise_for_status()
+        return response.json()  # TODO: A more verbose response
 
     def list(self) -> List[Dict]:
         return self._get(url=self.base_url)
 
-    def fetch(self): ...
+    def fetch(self, id: int) -> Dict:
+        return self._get(url=f"{self.base_url}/{id}")
 
     def create(self): ...
 
     def update(self): ...
 
-    def delete(self): ...
+    def delete(self, id: int) -> Dict:
+        return self._delete(url=f"{self.base_url}/{id}")
 
 
 class PostClient(APIClient):

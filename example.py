@@ -9,6 +9,9 @@ if __name__ == "__main__":
         print(post)
 
     photo_client = PhotoClient()
-    photos = photo_client.list()
+    second_photo = photo_client.fetch(id=1)
 
-    print(photos[1])
+    print(second_photo)
+
+    deleted_photo = photo_client.delete(id=1)
+    print(deleted_photo)
